@@ -4,6 +4,12 @@ import { cn } from "~/lib/utils";
 import { UserRole } from "~/db/schema";
 import { UserAvatar } from "~/components/user-avatar";
 import {
+  VariantABell,
+  VariantBNavItem,
+  VariantCFooterBell,
+  useVariant,
+} from "~/components/notifications-prototype"; // PROTOTYPE
+import {
   BookOpen,
   ChartColumn,
   LayoutDashboard,
@@ -120,6 +126,11 @@ export function Sidebar({
 }: SidebarProps) {
   const currentUserRole = currentUser?.role ?? null;
   const [isDark, setIsDark] = useState(false);
+  // PROTOTYPE: notifications variants
+  const variant = useVariant();
+  const who = currentUser
+    ? { id: currentUser.id, role: currentUser.role, isTeamAdmin }
+    : null;
 
   useEffect(() => {
     setIsDark(document.documentElement.classList.contains("dark"));
@@ -140,9 +151,11 @@ export function Sidebar({
         <NavLink to="/" className="text-lg font-bold tracking-tight">
           Cadence
         </NavLink>
+        {variant === "A" && <VariantABell who={who} />}
       </div>
 
       <nav className="flex-1 space-y-1 p-3">
+        {variant === "B" && <VariantBNavItem who={who} />}
         {navItems
           .filter((item) => isVisible(item, currentUserRole))
           .map((item) => (
@@ -242,6 +255,7 @@ export function Sidebar({
                 {currentUser.role}
               </div>
             </div>
+            {variant === "C" && <VariantCFooterBell who={who} />}
             <NavLink
               to="/settings"
               title="Settings"
